@@ -1,0 +1,756 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Мадина Кабдыл-манап — UX/UI портфолио</title>
+<style>
+  :root {
+    --bg: #fafbfc;
+    --surface: #ffffff;
+    --surface-2: #eef1f5;
+    --border: #e2e6ec;
+    --text-primary: #1c2433;
+    --text-secondary: #5b6679;
+    --text-muted: #8d97a8;
+    --blue-1: #4f8df5;
+    --blue-2: #2f6fe0;
+    --green-1: #4bc97a;
+    --green-2: #2fae5c;
+    --teal: #0f6e56;
+    --teal-bg: #e1f5ee;
+    --coral: #d85a30;
+    --coral-bg: #faece7;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text-primary);
+    line-height: 1.6;
+  }
+
+  .container {
+    max-width: 880px;
+    margin: 0 auto;
+    padding: 0 28px;
+  }
+
+  /* NAV */
+  nav {
+    position: sticky;
+    top: 0;
+    background: rgba(250, 251, 252, 0.92);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--border);
+    z-index: 100;
+    padding: 16px 0;
+  }
+
+  nav .container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .nav-name {
+    font-weight: 700;
+    font-size: 15px;
+    color: var(--text-primary);
+    text-decoration: none;
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 28px;
+    list-style: none;
+  }
+
+  .nav-links a {
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    transition: color 0.15s ease;
+  }
+
+  .nav-links a:hover { color: var(--blue-2); }
+
+  /* HERO */
+  .hero {
+    padding: 96px 0 72px;
+  }
+
+  .hero-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--teal-bg);
+    color: var(--teal);
+    font-size: 13px;
+    font-weight: 700;
+    padding: 6px 14px;
+    border-radius: 20px;
+    margin-bottom: 24px;
+  }
+
+  .hero h1 {
+    font-size: 42px;
+    font-weight: 700;
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+    margin-bottom: 18px;
+    max-width: 680px;
+  }
+
+  .hero h1 span {
+    background: linear-gradient(120deg, var(--blue-2), var(--green-2));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .hero-lede {
+    font-size: 17px;
+    color: var(--text-secondary);
+    max-width: 560px;
+    margin-bottom: 32px;
+  }
+
+  .hero-tags {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 40px;
+  }
+
+  .tag {
+    background: var(--surface-2);
+    color: var(--text-secondary);
+    font-size: 13px;
+    font-weight: 500;
+    padding: 6px 14px;
+    border-radius: 8px;
+  }
+
+  .hero-actions {
+    display: flex;
+    gap: 14px;
+    flex-wrap: wrap;
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    border-radius: 12px;
+    padding: 13px 22px;
+    font-size: 15px;
+    font-weight: 700;
+    text-decoration: none;
+    cursor: pointer;
+    border: none;
+    transition: transform 0.1s ease, filter 0.15s ease;
+  }
+
+  .btn:hover { filter: brightness(1.05); }
+  .btn:active { transform: scale(0.98); }
+
+  .btn-primary {
+    background: linear-gradient(135deg, var(--blue-1), var(--blue-2));
+    color: white;
+  }
+
+  .btn-secondary {
+    background: var(--surface);
+    color: var(--text-primary);
+    border: 1px solid var(--border);
+  }
+
+  /* CASE PREVIEW GRID */
+  .case-nav {
+    padding: 0 0 80px;
+  }
+
+  .section-label {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 20px;
+  }
+
+  .case-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .case-card {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 20px 24px;
+    text-decoration: none;
+    color: inherit;
+    transition: border-color 0.15s ease, transform 0.1s ease;
+  }
+
+  .case-card:hover {
+    border-color: var(--blue-1);
+    transform: translateY(-1px);
+  }
+
+  .case-card-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+  }
+
+  .icon-hero { background: linear-gradient(135deg, var(--blue-1), var(--blue-2)); }
+  .icon-mini-1 { background: linear-gradient(135deg, var(--coral), #993c1d); }
+  .icon-mini-2 { background: linear-gradient(135deg, #0f6e56, #04342c); }
+
+  .case-card-body { flex: 1; min-width: 0; }
+
+  .case-card-title {
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 3px;
+  }
+
+  .case-card-tagline {
+    font-size: 14px;
+    color: var(--text-secondary);
+  }
+
+  .case-card-arrow {
+    color: var(--text-muted);
+    flex-shrink: 0;
+  }
+
+  /* SECTIONS */
+  section.case {
+    padding: 64px 0;
+    border-top: 1px solid var(--border);
+  }
+
+  .case-header {
+    margin-bottom: 40px;
+  }
+
+  .case-kicker {
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 10px;
+  }
+
+  .kicker-hero { color: var(--blue-2); }
+  .kicker-mini-1 { color: var(--coral); }
+  .kicker-mini-2 { color: var(--teal); }
+
+  .case h2 {
+    font-size: 30px;
+    font-weight: 700;
+    margin-bottom: 8px;
+    letter-spacing: -0.01em;
+  }
+
+  .case-subtitle {
+    font-size: 16px;
+    color: var(--text-secondary);
+    max-width: 560px;
+  }
+
+  .meta-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 24px;
+    margin-top: 24px;
+    padding-top: 24px;
+    border-top: 1px solid var(--border);
+  }
+
+  .meta-item {
+    font-size: 13px;
+  }
+
+  .meta-item .meta-label {
+    color: var(--text-muted);
+    display: block;
+    margin-bottom: 2px;
+  }
+
+  .meta-item .meta-value {
+    color: var(--text-primary);
+    font-weight: 600;
+  }
+
+  .case h3 {
+    font-size: 20px;
+    font-weight: 700;
+    margin: 40px 0 14px;
+  }
+
+  .case p {
+    font-size: 15.5px;
+    color: var(--text-secondary);
+    margin-bottom: 14px;
+    max-width: 680px;
+  }
+
+  .case strong { color: var(--text-primary); font-weight: 700; }
+
+  .case ul, .case ol {
+    margin: 0 0 14px 0;
+    padding-left: 22px;
+    max-width: 680px;
+  }
+
+  .case li {
+    font-size: 15.5px;
+    color: var(--text-secondary);
+    margin-bottom: 6px;
+  }
+
+  .callout {
+    background: var(--surface-2);
+    border-radius: 14px;
+    padding: 20px 24px;
+    margin: 24px 0;
+    max-width: 680px;
+  }
+
+  .callout p { margin-bottom: 0; color: var(--text-primary); font-size: 15px; }
+  .callout p + p { margin-top: 10px; color: var(--text-secondary); font-size: 14px; }
+
+  .figure {
+    margin: 28px 0;
+    border-radius: 16px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    background: var(--surface);
+  }
+
+  .figure img { width: 100%; display: block; }
+
+  .figure-caption {
+    font-size: 13px;
+    color: var(--text-muted);
+    padding: 12px 18px;
+    border-top: 1px solid var(--border);
+  }
+
+  .screens-strip {
+    margin: 28px 0;
+    border-radius: 16px;
+    overflow-x: auto;
+    background: var(--surface-2);
+    padding: 24px;
+  }
+
+  .screens-strip img {
+    max-width: none;
+    height: 420px;
+    display: block;
+  }
+
+  .prototype-cta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    background: linear-gradient(135deg, #1c2433, #2f3a52);
+    border-radius: 16px;
+    padding: 28px 32px;
+    margin: 28px 0;
+    flex-wrap: wrap;
+  }
+
+  .prototype-cta-text h4 {
+    color: white;
+    font-size: 17px;
+    font-weight: 700;
+    margin-bottom: 6px;
+  }
+
+  .prototype-cta-text p {
+    color: #aab3c5;
+    font-size: 14px;
+    margin: 0;
+  }
+
+  .prototype-cta .btn-primary {
+    background: linear-gradient(135deg, var(--green-1), var(--green-2));
+    white-space: nowrap;
+  }
+
+  .limits-box {
+    background: var(--coral-bg);
+    border-radius: 14px;
+    padding: 20px 24px;
+    margin: 24px 0;
+    max-width: 680px;
+  }
+
+  .limits-box h4 {
+    color: #993c1d;
+    font-size: 14px;
+    font-weight: 700;
+    margin-bottom: 10px;
+  }
+
+  .limits-box li { color: #712b13; }
+
+  .stack-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 14px 0 24px;
+  }
+
+  .stack-pill {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--text-secondary);
+    font-size: 13px;
+    padding: 5px 12px;
+    border-radius: 8px;
+  }
+
+  /* FOOTER */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 56px 0 64px;
+    text-align: center;
+  }
+
+  footer h3 {
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 10px;
+  }
+
+  footer p {
+    color: var(--text-secondary);
+    font-size: 15px;
+    margin-bottom: 28px;
+  }
+
+  .footer-actions {
+    display: flex;
+    justify-content: center;
+    gap: 14px;
+    flex-wrap: wrap;
+  }
+
+  .footer-note {
+    margin-top: 40px;
+    font-size: 13px;
+    color: var(--text-muted);
+  }
+
+  @media (max-width: 640px) {
+    .hero h1 { font-size: 32px; }
+    .nav-links { display: none; }
+    .prototype-cta { flex-direction: column; align-items: flex-start; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="container">
+    <a href="#top" class="nav-name">Мадина Кабдыл-манап</a>
+    <ul class="nav-links">
+      <li><a href="#supply-chain">Supply Chain Tracker</a></li>
+      <li><a href="#zametsebya">Заметь себя</a></li>
+      <li><a href="#youcan">YOU CAN</a></li>
+    </ul>
+  </div>
+</nav>
+
+<header class="hero" id="top">
+  <div class="container">
+    <div class="hero-eyebrow">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
+      UX/UI дизайнер · Алматы
+    </div>
+    <h1>Проектирую интерфейсы там, где важны <span>доверие и точность</span></h1>
+    <p class="hero-lede">
+      UX/UI дизайн на стыке информационной безопасности, frontend-разработки и заботы о пользователе.
+      Три проекта — от blockchain-прототипа до сайта для родителей особенных детей — объединяет
+      один подход: решение растёт из реального ограничения, а не из визуального вкуса.
+    </p>
+    <div class="hero-tags">
+      <span class="tag">Figma · Auto Layout</span>
+      <span class="tag">User Flow / CJM</span>
+      <span class="tag">HTML / CSS / JS</span>
+      <span class="tag">Information Security</span>
+    </div>
+    <div class="hero-actions">
+      <a href="#supply-chain" class="btn btn-primary">
+        Смотреть кейсы
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+      </a>
+      <a href="#contact" class="btn btn-secondary">Связаться</a>
+    </div>
+  </div>
+</header>
+
+<section class="case-nav">
+  <div class="container">
+    <p class="section-label">Кейсы</p>
+    <div class="case-grid">
+      <a href="#supply-chain" class="case-card">
+        <div class="case-card-icon icon-hero">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 7.5v9l-9 5-9-5v-9l9-5 9 5z"/><path d="M3.5 7.5L12 12l8.5-4.5"/><path d="M12 22V12"/></svg>
+        </div>
+        <div class="case-card-body">
+          <p class="case-card-title">Supply Chain Tracker</p>
+          <p class="case-card-tagline">Blockchain-верификация поставок · диплом, Satbayev University</p>
+        </div>
+        <svg class="case-card-arrow" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+      </a>
+      <a href="#zametsebya" class="case-card">
+        <div class="case-card-icon icon-mini-1">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="M12 15l-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/></svg>
+        </div>
+        <div class="case-card-body">
+          <p class="case-card-title">«Заметь себя»</p>
+          <p class="case-card-tagline">Лендинг и автоматизация оплаты для фитнес-программы</p>
+        </div>
+        <svg class="case-card-arrow" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+      </a>
+      <a href="#youcan" class="case-card">
+        <div class="case-card-icon icon-mini-2">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+        </div>
+        <div class="case-card-body">
+          <p class="case-card-title">YOU CAN</p>
+          <p class="case-card-tagline">Трёхязычный сайт детского центра коррекции и развития</p>
+        </div>
+        <svg class="case-card-arrow" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CASE 1: SUPPLY CHAIN TRACKER ============ -->
+<section class="case" id="supply-chain">
+  <div class="container">
+    <div class="case-header">
+      <p class="case-kicker kicker-hero">Дипломный проект · Information Security</p>
+      <h2>Supply Chain Tracker</h2>
+      <p class="case-subtitle">Доверие и прозрачность в логистике через blockchain-верификацию</p>
+      <div class="meta-row">
+        <div class="meta-item"><span class="meta-label">Роль</span><span class="meta-value">UX/UI, frontend, security-анализ</span></div>
+        <div class="meta-item"><span class="meta-label">Год</span><span class="meta-value">2025</span></div>
+        <div class="meta-item"><span class="meta-label">Формат</span><span class="meta-value">Соло-проект</span></div>
+      </div>
+      <div class="stack-pills">
+        <span class="stack-pill">Figma</span>
+        <span class="stack-pill">HTML/CSS/JS</span>
+        <span class="stack-pill">Web3.js</span>
+        <span class="stack-pill">Solidity</span>
+        <span class="stack-pill">Hardhat</span>
+        <span class="stack-pill">Ganache</span>
+        <span class="stack-pill">MetaMask</span>
+      </div>
+    </div>
+
+    <p>Дипломный проект, специальность «Информационная безопасность», Satbayev University, 2025. Соло-проект: я спроектировала интерфейс, разработала фронтенд и интегрировала его с Ethereum-смартконтрактом через Web3.js, MetaMask и локальную тестовую сеть Ganache.</p>
+
+    <h3>Проблема</h3>
+    <p>В логистике остро стоит проблема доверия между участниками цепочки поставок: данные о грузе легко подделать постфактум, а единого источника правды между отправителем и получателем не существует.</p>
+    <div class="callout">
+      <p>50+ млрд тенге — объём теневого рынка фальшивых сертификатов в Казахстане (LSM.kz, 2024)</p>
+      <p>1100+ «серых» документов оформлены одной компанией — продукция без проверок массово поступает в госзакупки</p>
+    </div>
+
+    <h3>Research</h3>
+    <p>Формальные интервью не проводились — research строился на анализе индустрии (данные LSM.kz) и конкурентном разборе двух существующих blockchain-решений в логистике: IBM Food Trust и TradeLens. Оба показывают общий паттерн — прозрачность достигается фиксацией событий в неизменяемом реестре, а не доверием к одной стороне.</p>
+
+    <h3>User Flow</h3>
+    <p>Система построена вокруг двух ролей и объекта с двумя статусами (Registered, Delivered), заданными в смарт-контракте. Ключевой UX-риск — асинхронный промежуток между действием пользователя и подтверждением в блокчейне.</p>
+    <div class="figure">
+      <img src="01_user_flow.png" alt="User flow Supply Chain Tracker: отправитель и получатель">
+      <div class="figure-caption">User flow — параллельные потоки отправителя и получателя с альтернативным путём ошибки</div>
+    </div>
+
+    <h3>Customer Journey Map</h3>
+    <p>CJM на четыре этапа выявила три точки напряжения: непонятность технологии на старте, отсутствие обратной связи во время ожидания, отсутствие явного доказательства в момент завершения.</p>
+    <div class="figure">
+      <img src="02_cjm.png" alt="Customer journey map Supply Chain Tracker">
+      <div class="figure-caption">CJM — действия, мысли, эмоции и точки боли на пути отправителя и получателя</div>
+    </div>
+
+    <h3>Дизайн-решения</h3>
+    <ul>
+      <li><strong>Онбординг-объяснение</strong> — что происходит технически, без жаргона, до первого действия</li>
+      <li><strong>Экран ожидания</strong> — явный статус «в обработке» вместо пустоты между формой и результатом</li>
+      <li><strong>Видимое доказательство</strong> — хэш транзакции на финальном экране, а не только в консоли</li>
+    </ul>
+
+    <h3>Финальные экраны</h3>
+    <p>Светлая, дружелюбная палитра с переключателем дня/ночи — сознательный выбор против типичной тёмной «крипто-эстетики», чтобы технология не пугала пользователя, не знакомого с Web3.</p>
+    <div class="screens-strip">
+      <img src="09_all_screens_row.png" alt="Пять экранов Supply Chain Tracker: онбординг, форма, ожидание, успех, ошибка">
+    </div>
+
+    <div class="prototype-cta">
+      <div class="prototype-cta-text">
+        <h4>Интерактивный прототип</h4>
+        <p>Полностью рабочий HTML-прототип с валидацией, реальной задержкой обработки и переключением темы</p>
+      </div>
+      <a href="prototype.html" class="btn btn-primary" target="_blank">
+        Открыть прототип
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><path d="M15 3h6v6"/><path d="M10 14L21 3"/></svg>
+      </a>
+    </div>
+
+    <h3>Security-слой</h3>
+    <p>Как часть требований специальности я провела STRIDE-анализ угроз для каждого компонента системы и сопоставила им реализованные меры защиты.</p>
+    <div class="figure">
+      <img src="03_stride_summary.png" alt="Сокращённый STRIDE-анализ угроз Supply Chain Tracker">
+    </div>
+
+    <div class="limits-box">
+      <h4>Честные ограничения</h4>
+      <ul>
+        <li>Прототип работает в локальной тестовой сети Ganache — не в основной сети Ethereum</li>
+        <li>Смарт-контракт поддерживает только два статуса — упрощённая модель, не полноценный multi-step supply chain</li>
+        <li>Метрики использования не собирались — у прототипа не было пользователей за пределами защиты</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CASE 2: ЗАМЕТЬ СЕБЯ ============ -->
+<section class="case" id="zametsebya">
+  <div class="container">
+    <div class="case-header">
+      <p class="case-kicker kicker-mini-1">Коммерческий проект · прямой клиент</p>
+      <h2>«Заметь себя»</h2>
+      <p class="case-subtitle">Лендинг с двойной оплатой и автоматизацией доступа для фитнес-программы</p>
+      <div class="meta-row">
+        <div class="meta-item"><span class="meta-label">Роль</span><span class="meta-value">UI, структура, автоматизация</span></div>
+        <div class="meta-item"><span class="meta-label">Клиент</span><span class="meta-value">Зульфия Аметова, нутрициолог</span></div>
+        <div class="meta-item"><span class="meta-label">Сайт</span><span class="meta-value"><a href="https://zametsebya.tilda.ws" target="_blank" style="color:var(--blue-2)">zametsebya.tilda.ws</a></span></div>
+      </div>
+      <div class="stack-pills">
+        <span class="stack-pill">Tilda</span>
+        <span class="stack-pill">Кастомный код</span>
+        <span class="stack-pill">Robokassa</span>
+        <span class="stack-pill">Kaspi Pay</span>
+        <span class="stack-pill">Google Apps Script</span>
+      </div>
+    </div>
+
+    <p>Прямой клиент — нутрициолог и фитнес-тренер, автор программы для женщин 30+. В отличие от других freelance-проектов, которые шли через менеджера по готовому ТЗ, здесь я работала в прямом диалоге с клиентом — от первого брифа до автоматизации оплаты.</p>
+
+    <h3>Бриф и ограничение</h3>
+    <p>Единственное жёсткое требование клиента — «никаких ярких цветов». Источником палитры стало её собственное фото, доработанное мной в ibis Paint: цвета сайта буквально считаны с одежды на фото, не взяты из референсов.</p>
+
+    <div class="figure">
+      <img src="zametsebya_brief_to_decision.png" alt="От брифа клиента к дизайн-решению Заметь себя">
+    </div>
+
+    <h3>Техническое решение: два метода оплаты</h3>
+    <p>Стандартные виджеты Tilda не поддерживают два независимых способа оплаты в одном блоке — я написала кастомный код. Для казахстанской аудитории Kaspi — это не «ещё один способ», а самый привычный путь оплаты; не предложить его означало бы потерять клиента на последнем шаге воронки.</p>
+
+    <h3>Автоматизация доступа</h3>
+    <p>Перевела процесс с ручной рассылки через Продамус на Robokassa, написала скрипт на Google Apps Script: при оплате данные автоматически попадают в Google Sheets и триггерят отправку доступа на e-mail.</p>
+    <div class="callout">
+      <p>1950 срабатываний скрипта за 7 дней, частота ошибок 0.21%</p>
+      <p>Автоматизация работает стабильно, почти без сбоев и без необходимости ручного вмешательства</p>
+    </div>
+
+    <div class="limits-box">
+      <h4>Честные ограничения</h4>
+      <ul>
+        <li>Формального исследования аудитории не проводилось — решения основаны на брифе клиента</li>
+        <li>A/B-тестирование палитры и структуры не проводилось — выбор сделан интуитивно</li>
+        <li>1950 срабатываний отражает надёжность автоматизации, не точное число продаж</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CASE 3: YOU CAN ============ -->
+<section class="case" id="youcan">
+  <div class="container">
+    <div class="case-header">
+      <p class="case-kicker kicker-mini-2">Коммерческий проект · прямой клиент</p>
+      <h2>YOU CAN</h2>
+      <p class="case-subtitle">Сайт детского центра коррекции и развития с акцентом на доверие и спокойствие</p>
+      <div class="meta-row">
+        <div class="meta-item"><span class="meta-label">Роль</span><span class="meta-value">UI, структура, мультиязычность</span></div>
+        <div class="meta-item"><span class="meta-label">Клиент</span><span class="meta-value">Детский центр YOU CAN, Астана</span></div>
+      </div>
+      <div class="stack-pills">
+        <span class="stack-pill">Tilda</span>
+        <span class="stack-pill">KZ / RU / EN</span>
+      </div>
+    </div>
+
+    <p>Прямой клиент — детский центр коррекции и развития для особенных детей и дошкольников. Аудитория сайта — родители, часто уже находящиеся в состоянии тревоги. Сайт коррекционного центра — это точка первого контакта, где нужно снять тревогу, а не усилить её.</p>
+
+    <h3>Решение 1 — Цвет</h3>
+    <p>Тёмно-бирюзовая палитра с мягкими формами опирается на два основания: преемственность существующего лого центра и психологическую ассоциацию синего/бирюзового с медициной и надёжностью — сигнал «здесь безопасно» ещё до прочтения текста.</p>
+
+    <h3>Решение 2 — Команда с именами</h3>
+    <p>Каждый специалист показан с фото, именем и квалификацией (логопед-дефектолог, АВА-терапевт, детский психолог), с прямой кнопкой записи к конкретному человеку. Анонимность здесь увеличивает тревогу, а не снижает её.</p>
+
+    <h3>Решение 3 — Мультиязычность как инициатива</h3>
+    <p>Сайт на трёх языках — это моя инициатива, не запрос клиента. Русский добавлен не как «основной язык города», а для русскоязычной аудитории как отдельной группы родителей.</p>
+    <div class="figure">
+      <img src="youcan_multilingual_structure.png" alt="Структура трёхязычной реализации сайта YOU CAN">
+    </div>
+
+    <h3>Мгновенный контакт</h3>
+    <p>Все CTA ведут в WhatsApp с заранее заполненным сообщением — это снимает с родителя нагрузку «что написать, чтобы не выглядеть глупо» при первом обращении в коррекционный центр.</p>
+
+    <div class="limits-box">
+      <h4>Честные ограничения</h4>
+      <ul>
+        <li>Формального исследования родителей особенных детей не проводилось</li>
+        <li>Аналитика по сайту не собиралась — эффективность решений не подтверждена метриками</li>
+        <li>Фотографии команды предоставлены центром, не подбирались мной лично</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<footer id="contact">
+  <div class="container">
+    <h3>Открыта к новым проектам</h3>
+    <p>UX/UI дизайн, frontend-реализация, работа со сложными доменами</p>
+    <div class="footer-actions">
+      <a href="mailto:your-email@example.com" class="btn btn-primary">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M22 7l-10 6L2 7"/></svg>
+        Написать
+      </a>
+      <a href="#" class="btn btn-secondary">Резюме (PDF)</a>
+    </div>
+    <p class="footer-note">Мадина Кабдыл-манап · Алматы, 2026</p>
+  </div>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,807 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Supply Chain Tracker — интерактивный прототип</title>
+<style>
+  :root {
+    --page-bg: #eef0f3;
+    --card-bg: #ffffff;
+    --field-bg: #eaf1fb;
+    --field-text: #1e2a3a;
+    --field-placeholder: #93a1b3;
+    --label-text: #1c2433;
+    --section-title: #1c2433;
+    --muted: #7c8a9c;
+    --success-text: #2fae5c;
+    --error-text: #e0524a;
+    --error-bg: #fdeceb;
+    --footer-text: #9aa5b3;
+    --blue-1: #4f8df5;
+    --blue-2: #2f6fe0;
+    --green-1: #4bc97a;
+    --green-2: #2fae5c;
+    --transition: all 0.35s ease;
+  }
+
+  [data-theme="dark"] {
+    --page-bg: #0d1117;
+    --card-bg: #1b2233;
+    --field-bg: #2a3142;
+    --field-text: #e7eaf0;
+    --field-placeholder: #7d8aa0;
+    --label-text: #f0f2f6;
+    --section-title: #f0f2f6;
+    --muted: #9aa5b8;
+    --success-text: #4bd383;
+    --error-text: #f08b85;
+    --error-bg: #3a2326;
+    --footer-text: #6b7588;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+    background: var(--page-bg);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px;
+    transition: var(--transition);
+  }
+
+  .wrap-outer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .device {
+    width: 400px;
+    background: var(--card-bg);
+    border-radius: 24px;
+    overflow: hidden;
+    box-shadow: 0 4px 24px rgba(20, 30, 50, 0.08);
+    position: relative;
+    min-height: 600px;
+    display: flex;
+    flex-direction: column;
+    transition: var(--transition);
+  }
+
+  .topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 24px 24px 20px;
+    flex-shrink: 0;
+    gap: 12px;
+  }
+
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .brand-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 9px;
+    background: linear-gradient(135deg, var(--blue-1), var(--blue-2));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    color: white;
+  }
+
+  .brand-name {
+    color: var(--section-title);
+    font-size: 17px;
+    font-weight: 700;
+    line-height: 1.15;
+  }
+
+  .theme-toggle {
+    flex: 1;
+    background: var(--field-bg);
+    border-radius: 14px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border: none;
+    transition: var(--transition);
+    color: var(--blue-2);
+  }
+
+  [data-theme="dark"] .theme-toggle { color: #f5c542; }
+
+  .theme-toggle:hover { opacity: 0.85; }
+
+  .screen {
+    display: none;
+    flex: 1;
+    flex-direction: column;
+    padding: 0 24px 28px;
+  }
+
+  .screen.active {
+    display: flex;
+    animation: fadeIn 0.25s ease;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(4px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .section-title {
+    color: var(--section-title);
+    font-size: 16px;
+    font-weight: 700;
+    margin: 0 0 14px;
+  }
+
+  .field-group { margin-bottom: 16px; }
+
+  .field-group input,
+  .field-group textarea {
+    width: 100%;
+    background: var(--field-bg);
+    border: none;
+    border-radius: 14px;
+    padding: 16px 18px;
+    color: var(--field-text);
+    font-size: 15px;
+    font-family: inherit;
+    transition: var(--transition);
+  }
+
+  .field-group input::placeholder { color: var(--field-placeholder); }
+
+  .field-group input:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(79, 141, 245, 0.25);
+  }
+
+  .field-group input.error {
+    box-shadow: 0 0 0 2px var(--error-text);
+  }
+
+  .field-error {
+    color: var(--error-text);
+    font-size: 13px;
+    margin: 8px 4px 0;
+    display: none;
+  }
+
+  .field-error.visible { display: block; }
+
+  .btn {
+    width: 100%;
+    border: none;
+    border-radius: 14px;
+    padding: 16px;
+    font-size: 15px;
+    font-weight: 700;
+    color: white;
+    cursor: pointer;
+    font-family: inherit;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: filter 0.15s ease, transform 0.1s ease;
+  }
+
+  .btn:hover { filter: brightness(1.05); }
+  .btn:active { transform: scale(0.99); }
+
+  .btn-blue { background: linear-gradient(135deg, var(--blue-1), var(--blue-2)); }
+  .btn-green { background: linear-gradient(135deg, var(--green-1), var(--green-2)); }
+
+  .btn-ghost {
+    background: var(--field-bg);
+    color: var(--section-title);
+  }
+
+  .divider { height: 28px; }
+
+  .status-line {
+    text-align: center;
+    font-size: 14px;
+    font-weight: 700;
+    margin: 16px 0 0;
+    min-height: 20px;
+  }
+
+  .status-line.success { color: var(--success-text); }
+  .status-line.error { color: var(--error-text); }
+
+  .hint-line {
+    text-align: center;
+    color: var(--muted);
+    font-size: 13px;
+    margin: 14px 0 0;
+  }
+
+  .hint-line a { color: var(--blue-2); text-decoration: underline; cursor: pointer; }
+
+  /* Onboarding specific */
+  .onboarding-icon-big {
+    width: 56px;
+    height: 56px;
+    border-radius: 16px;
+    background: linear-gradient(135deg, var(--blue-1), var(--blue-2));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 8px auto 18px;
+    color: white;
+  }
+
+  .onboarding-title {
+    color: var(--section-title);
+    font-size: 21px;
+    font-weight: 700;
+    margin: 0 0 6px;
+    text-align: center;
+  }
+
+  .onboarding-subtitle {
+    color: var(--muted);
+    font-size: 14px;
+    margin: 0 0 28px;
+    text-align: center;
+  }
+
+  .feature-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-bottom: 28px;
+    flex: 1;
+  }
+
+  .feature-item {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    background: var(--field-bg);
+    border-radius: 14px;
+    padding: 14px 16px;
+  }
+
+  .feature-item svg { color: var(--blue-2); flex-shrink: 0; margin-top: 1px; }
+
+  .feature-text {
+    color: var(--field-text);
+    font-size: 14px;
+    line-height: 1.5;
+    margin: 0;
+  }
+
+  /* Pending */
+  .pending-wrap {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 30px 0;
+  }
+
+  .spinner-ring {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    border: 4px solid var(--field-bg);
+    border-top-color: var(--blue-1);
+    animation: spin 0.9s linear infinite;
+    margin-bottom: 22px;
+  }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .pending-title {
+    color: var(--section-title);
+    font-size: 17px;
+    font-weight: 700;
+    margin: 0 0 8px;
+  }
+
+  .pending-subtitle {
+    color: var(--muted);
+    font-size: 14px;
+    margin: 0 0 24px;
+    max-width: 260px;
+    line-height: 1.5;
+  }
+
+  .tx-box {
+    background: var(--field-bg);
+    border-radius: 14px;
+    padding: 14px 16px;
+    width: 100%;
+  }
+
+  .tx-label { color: var(--muted); font-size: 12px; margin: 0 0 4px; }
+  .tx-value { color: var(--field-text); font-size: 13px; margin: 0; font-family: "SF Mono", Consolas, monospace; }
+
+  .progress-track {
+    width: 100%;
+    height: 4px;
+    background: rgba(0,0,0,0.06);
+    border-radius: 2px;
+    margin-top: 16px;
+    overflow: hidden;
+  }
+
+  [data-theme="dark"] .progress-track { background: rgba(255,255,255,0.08); }
+
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--blue-1), var(--blue-2));
+    width: 0%;
+    transition: width 2.2s linear;
+    border-radius: 2px;
+  }
+
+  /* Success / Error result */
+  .result-wrap {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 24px 0;
+  }
+
+  .result-icon {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 18px;
+    color: white;
+  }
+
+  .result-icon.success { background: linear-gradient(135deg, var(--green-1), var(--green-2)); }
+  .result-icon.error { background: var(--error-text); }
+
+  .result-title {
+    color: var(--section-title);
+    font-size: 17px;
+    font-weight: 700;
+    margin: 0 0 6px;
+  }
+
+  .result-subtitle {
+    color: var(--muted);
+    font-size: 14px;
+    margin: 0 0 22px;
+    max-width: 280px;
+    line-height: 1.5;
+  }
+
+  .proof-box {
+    background: var(--field-bg);
+    border-radius: 14px;
+    padding: 16px;
+    width: 100%;
+    text-align: left;
+    margin-bottom: 20px;
+  }
+
+  .proof-label { color: var(--muted); font-size: 12px; margin: 0 0 6px; }
+
+  .proof-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+  }
+
+  .proof-hash {
+    color: var(--field-text);
+    font-size: 13px;
+    margin: 0;
+    font-family: "SF Mono", Consolas, monospace;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .copy-btn {
+    background: none;
+    border: none;
+    color: var(--muted);
+    cursor: pointer;
+    flex-shrink: 0;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    transition: color 0.15s ease;
+  }
+
+  .copy-btn:hover { color: var(--blue-2); }
+
+  .explorer-link {
+    color: var(--blue-2);
+    font-size: 13px;
+    text-decoration: underline;
+    cursor: pointer;
+    margin: 10px 0 0;
+    display: inline-block;
+  }
+
+  .error-field-wrap { width: 100%; margin-bottom: 18px; text-align: left; }
+  .error-field-wrap label {
+    display: block;
+    color: var(--muted);
+    font-size: 13px;
+    margin-bottom: 8px;
+  }
+
+  .footer-note {
+    text-align: center;
+    color: var(--footer-text);
+    font-size: 13px;
+    padding: 18px 0 4px;
+  }
+
+  .copy-toast {
+    position: absolute;
+    bottom: 16px;
+    left: 50%;
+    transform: translateX(-50%) translateY(8px);
+    background: var(--section-title);
+    color: var(--card-bg);
+    font-size: 12px;
+    padding: 8px 14px;
+    border-radius: 10px;
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+  }
+
+  .copy-toast.visible { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  .meta-row {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin: 18px 0 4px;
+    flex-wrap: wrap;
+  }
+
+  .meta-pill {
+    font-size: 11px;
+    color: #777;
+    background: #fff;
+    border: 0.5px solid #ddd;
+    padding: 4px 12px;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+
+  .meta-pill:hover { background: #f3f3f3; }
+  .meta-pill.current { background: #2f6fe0; color: white; border-color: #2f6fe0; }
+
+  .caption-bar {
+    text-align: center;
+    color: #999;
+    font-size: 12px;
+    margin-top: 12px;
+    min-height: 16px;
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap-outer">
+  <div class="device" id="device" data-theme="light">
+
+    <!-- ONBOARDING -->
+    <div class="screen active" id="screen-onboarding">
+      <div class="topbar">
+        <div class="brand">
+          <div class="brand-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 7.5v9l-9 5-9-5v-9l9-5 9 5z"/><path d="M3.5 7.5L12 12l8.5-4.5"/><path d="M12 22V12"/></svg>
+          </div>
+          <span class="brand-name">Supply<br>Chain Tracker</span>
+        </div>
+        <button class="theme-toggle" onclick="toggleTheme()" aria-label="Переключить тему">
+          <svg id="theme-icon" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 3a9 9 0 1 0 9 9c0-.46-.04-.92-.1-1.36a5.389 5.389 0 0 1-4.4 2.26 5.403 5.403 0 0 1-3.14-9.8c-.44-.06-.9-.1-1.36-.1z"/></svg>
+        </button>
+      </div>
+      <div class="onboarding-icon-big">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 7.5v9l-9 5-9-5v-9l9-5 9 5z"/><path d="M3.5 7.5L12 12l8.5-4.5"/><path d="M12 22V12"/></svg>
+      </div>
+      <p class="onboarding-title">Прозрачная регистрация поставок</p>
+      <p class="onboarding-subtitle">Каждая запись фиксируется в блокчейне навсегда</p>
+      <div class="feature-list">
+        <div class="feature-item">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
+          <p class="feature-text">Данные нельзя подделать или изменить задним числом</p>
+        </div>
+        <div class="feature-item">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h13a1 1 0 0 1 1 1v2"/><path d="M3 7v11a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-9a1 1 0 0 0-1-1H5a2 2 0 0 1-2-2z"/><circle cx="16" cy="14" r="1.2"/></svg>
+          <p class="feature-text">Подтверждение займёт пару минут через ваш кошелёк</p>
+        </div>
+        <div class="feature-item">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>
+          <p class="feature-text">Мы покажем статус на каждом шаге — без сюрпризов</p>
+        </div>
+      </div>
+      <button class="btn btn-blue" onclick="goTo('form')">Начать регистрацию</button>
+      <p class="hint-line">Нет кошелька? <a onclick="showCaption('В прототипе это демо-ссылка')">Узнать, как подключить</a></p>
+    </div>
+
+    <!-- FORM -->
+    <div class="screen" id="screen-form">
+      <div class="topbar">
+        <div class="brand">
+          <div class="brand-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 7.5v9l-9 5-9-5v-9l9-5 9 5z"/><path d="M3.5 7.5L12 12l8.5-4.5"/><path d="M12 22V12"/></svg>
+          </div>
+          <span class="brand-name">Supply<br>Chain Tracker</span>
+        </div>
+        <button class="theme-toggle" onclick="toggleTheme()" aria-label="Переключить тему">
+          <svg id="theme-icon-2" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 3a9 9 0 1 0 9 9c0-.46-.04-.92-.1-1.36a5.389 5.389 0 0 1-4.4 2.26 5.403 5.403 0 0 1-3.14-9.8c-.44-.06-.9-.1-1.36-.1z"/></svg>
+        </button>
+      </div>
+
+      <p class="section-title">1. Регистрация поставки</p>
+      <div class="field-group">
+        <input type="text" id="input-id" placeholder="Введите ID поставки">
+      </div>
+      <div class="field-group">
+        <input type="text" id="input-desc" placeholder="Описание поставки">
+      </div>
+      <div class="field-group" id="field-addr">
+        <input type="text" id="input-addr" placeholder="Адрес получателя">
+        <p class="field-error" id="error-addr">Проверьте формат адреса — должен начинаться с 0x</p>
+      </div>
+      <button class="btn btn-blue" onclick="submitForm()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="M12 15l-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"/><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/></svg>
+        Зарегистрировать
+      </button>
+
+      <div class="divider"></div>
+
+      <p class="section-title">2. Подтверждение доставки</p>
+      <div class="field-group">
+        <input type="text" id="input-confirm-id" placeholder="Введите ID поставки">
+      </div>
+      <button class="btn btn-green" onclick="confirmDelivery()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"/></svg>
+        Подтвердить доставку
+      </button>
+      <p class="status-line" id="confirm-status"></p>
+    </div>
+
+    <!-- PENDING -->
+    <div class="screen" id="screen-pending">
+      <div class="topbar">
+        <div class="brand">
+          <div class="brand-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 7.5v9l-9 5-9-5v-9l9-5 9 5z"/><path d="M3.5 7.5L12 12l8.5-4.5"/><path d="M12 22V12"/></svg>
+          </div>
+          <span class="brand-name">Supply<br>Chain Tracker</span>
+        </div>
+        <button class="theme-toggle" onclick="toggleTheme()" aria-label="Переключить тему">
+          <svg id="theme-icon-3" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 3a9 9 0 1 0 9 9c0-.46-.04-.92-.1-1.36a5.389 5.389 0 0 1-4.4 2.26 5.403 5.403 0 0 1-3.14-9.8c-.44-.06-.9-.1-1.36-.1z"/></svg>
+        </button>
+      </div>
+      <div class="pending-wrap">
+        <div class="spinner-ring"></div>
+        <p class="pending-title">Транзакция обрабатывается</p>
+        <p class="pending-subtitle">Обычно занимает несколько секунд. Не закрывайте страницу.</p>
+        <div class="tx-box">
+          <p class="tx-label">ID транзакции</p>
+          <p class="tx-value">0x5FbDB...80aa3</p>
+          <div class="progress-track"><div class="progress-fill" id="progress-fill"></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SUCCESS -->
+    <div class="screen" id="screen-success">
+      <div class="topbar">
+        <div class="brand">
+          <div class="brand-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 7.5v9l-9 5-9-5v-9l9-5 9 5z"/><path d="M3.5 7.5L12 12l8.5-4.5"/><path d="M12 22V12"/></svg>
+          </div>
+          <span class="brand-name">Supply<br>Chain Tracker</span>
+        </div>
+        <button class="theme-toggle" onclick="toggleTheme()" aria-label="Переключить тему">
+          <svg id="theme-icon-4" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 3a9 9 0 1 0 9 9c0-.46-.04-.92-.1-1.36a5.389 5.389 0 0 1-4.4 2.26 5.403 5.403 0 0 1-3.14-9.8c-.44-.06-.9-.1-1.36-.1z"/></svg>
+        </button>
+      </div>
+      <div class="result-wrap">
+        <div class="result-icon success">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"/></svg>
+        </div>
+        <p class="result-title">Поставка зарегистрирована</p>
+        <p class="result-subtitle">Статус: Registered · ID <span id="success-id">A001</span></p>
+        <div class="proof-box">
+          <p class="proof-label">Доказательство в блокчейне</p>
+          <div class="proof-row">
+            <p class="proof-hash">0x5FbDB2315678afecb367f032d93F642f64180aa3</p>
+            <button class="copy-btn" onclick="copyHash()" aria-label="Скопировать хэш">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v1"/></svg>
+            </button>
+          </div>
+          <a class="explorer-link" onclick="showCaption('В прототипе это демо-ссылка на эксплорер')">Посмотреть в эксплорере ↗</a>
+        </div>
+        <button class="btn btn-ghost" onclick="resetFlow()">Зарегистрировать новую поставку</button>
+      </div>
+    </div>
+
+    <!-- ERROR -->
+    <div class="screen" id="screen-error">
+      <div class="topbar">
+        <div class="brand">
+          <div class="brand-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 7.5v9l-9 5-9-5v-9l9-5 9 5z"/><path d="M3.5 7.5L12 12l8.5-4.5"/><path d="M12 22V12"/></svg>
+          </div>
+          <span class="brand-name">Supply<br>Chain Tracker</span>
+        </div>
+        <button class="theme-toggle" onclick="toggleTheme()" aria-label="Переключить тему">
+          <svg id="theme-icon-5" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 3a9 9 0 1 0 9 9c0-.46-.04-.92-.1-1.36a5.389 5.389 0 0 1-4.4 2.26 5.403 5.403 0 0 1-3.14-9.8c-.44-.06-.9-.1-1.36-.1z"/></svg>
+        </button>
+      </div>
+      <div class="result-wrap">
+        <div class="result-icon error">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg>
+        </div>
+        <p class="result-title">Поставка не найдена</p>
+        <p class="result-subtitle">Проверьте ID поставки и попробуйте снова. ID должен совпадать с тем, что указал отправитель.</p>
+        <div class="error-field-wrap">
+          <label>ID поставки</label>
+          <input type="text" id="error-id-input" value="A0001" style="width:100%;background:var(--field-bg);border:none;border-radius:14px;padding:16px 18px;color:var(--field-text);font-size:15px;font-family:inherit;box-shadow:0 0 0 2px var(--error-text);">
+        </div>
+        <button class="btn btn-blue" onclick="goTo('form')">Попробовать снова</button>
+      </div>
+    </div>
+
+    <p class="footer-note">Дипломная работа · Satbayev University · 2025</p>
+    <div class="copy-toast" id="copy-toast">Хэш скопирован</div>
+  </div>
+
+  <div class="meta-row">
+    <span class="meta-pill" data-screen="onboarding" onclick="goTo('onboarding')">1. Онбординг</span>
+    <span class="meta-pill" data-screen="form" onclick="goTo('form')">2. Форма</span>
+    <span class="meta-pill" data-screen="pending" onclick="showCaption('Этот экран доступен через отправку формы')">3. Ожидание</span>
+    <span class="meta-pill" data-screen="success" onclick="showCaption('Этот экран доступен через отправку формы')">4. Успех</span>
+    <span class="meta-pill" data-screen="error" onclick="triggerError()">5. Ошибка</span>
+  </div>
+  <div class="caption-bar" id="caption-bar"></div>
+</div>
+
+<script>
+  const screens = ['onboarding', 'form', 'pending', 'success', 'error'];
+
+  function goTo(name) {
+    screens.forEach(s => document.getElementById('screen-' + s).classList.remove('active'));
+    document.getElementById('screen-' + name).classList.add('active');
+    document.querySelectorAll('.meta-pill').forEach(p => {
+      p.classList.toggle('current', p.dataset.screen === name);
+    });
+    if (name === 'form') clearErrors();
+  }
+
+  function clearErrors() {
+    document.getElementById('input-addr').classList.remove('error');
+    document.getElementById('error-addr').classList.remove('visible');
+  }
+
+  function isValidAddress(val) {
+    return /^0x[a-fA-F0-9]{4,}$/.test(val.trim());
+  }
+
+  function submitForm() {
+    const idVal = document.getElementById('input-id').value.trim();
+    const addrVal = document.getElementById('input-addr').value.trim();
+
+    clearErrors();
+
+    if (!addrVal || !isValidAddress(addrVal)) {
+      document.getElementById('input-addr').classList.add('error');
+      document.getElementById('error-addr').classList.add('visible');
+      return;
+    }
+
+    document.getElementById('success-id').textContent = idVal || 'A001';
+    goTo('pending');
+    document.getElementById('progress-fill').style.width = '0%';
+
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        document.getElementById('progress-fill').style.width = '100%';
+      });
+    });
+
+    setTimeout(() => goTo('success'), 2200);
+  }
+
+  function confirmDelivery() {
+    const val = document.getElementById('input-confirm-id').value.trim();
+    const status = document.getElementById('confirm-status');
+    if (!val) {
+      status.textContent = 'Введите ID поставки';
+      status.className = 'status-line error';
+      return;
+    }
+    status.textContent = 'Поставка подтверждена!';
+    status.className = 'status-line success';
+  }
+
+  function triggerError() { goTo('error'); }
+
+  function resetFlow() {
+    document.getElementById('input-id').value = '';
+    document.getElementById('input-desc').value = '';
+    document.getElementById('input-addr').value = '';
+    document.getElementById('input-confirm-id').value = '';
+    document.getElementById('confirm-status').textContent = '';
+    goTo('form');
+  }
+
+  function copyHash() {
+    const hash = '0x5FbDB2315678afecb367f032d93F642f64180aa3';
+    if (navigator.clipboard) navigator.clipboard.writeText(hash).catch(() => {});
+    const toast = document.getElementById('copy-toast');
+    toast.classList.add('visible');
+    setTimeout(() => toast.classList.remove('visible'), 1500);
+  }
+
+  function showCaption(text) {
+    const bar = document.getElementById('caption-bar');
+    bar.textContent = text;
+    setTimeout(() => { if (bar.textContent === text) bar.textContent = ''; }, 2500);
+  }
+
+  function toggleTheme() {
+    const device = document.getElementById('device');
+    const isDark = device.getAttribute('data-theme') === 'dark';
+    device.setAttribute('data-theme', isDark ? 'light' : 'dark');
+
+    const sunPath = '<path d="M12 17a5 5 0 1 0 0-10 5 5 0 0 0 0 10z"/><path d="M12 1v3M12 20v3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M1 12h3M20 12h3M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1"/>';
+    const moonPath = '<path d="M12 3a9 9 0 1 0 9 9c0-.46-.04-.92-.1-1.36a5.389 5.389 0 0 1-4.4 2.26 5.403 5.403 0 0 1-3.14-9.8c-.44-.06-.9-.1-1.36-.1z"/>';
+
+    for (let i = 1; i <= 5; i++) {
+      const icon = document.getElementById(i === 1 ? 'theme-icon' : 'theme-icon-' + i);
+      if (!icon) continue;
+      if (isDark) {
+        icon.setAttribute('fill', 'currentColor');
+        icon.innerHTML = moonPath;
+      } else {
+        icon.setAttribute('fill', 'none');
+        icon.setAttribute('stroke', 'currentColor');
+        icon.setAttribute('stroke-width', '2');
+        icon.setAttribute('stroke-linecap', 'round');
+        icon.innerHTML = sunPath;
+      }
+    }
+  }
+
+  goTo('onboarding');
+</script>
+
+</body>
+</html>
